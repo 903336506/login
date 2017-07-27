@@ -1,0 +1,120 @@
+<style>
+ .pagination {
+    margin: 0;
+    border-radius: 0;
+}
+.pagination>li:first-child>a,.pagination>li:first-child>span {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0
+}
+.pagination>li:last-child>a,.pagination>li:last-child>span {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0
+}
+</style>
+ <table class="table table-bordered dev_user_table mt10" id="user_table">
+    <thead>
+        <tr>
+            <th width="16%">用户名</th>
+            <th width="15%">中文名</th>
+            <th width="15%">QQ</th>
+            <th width="16%">联系电话</th>
+            <th width="16%">常用邮箱</th>
+            <th width="10%">角色</th>
+            <th width="12%">操作</th>
+        </tr>
+    </thead>
+    <tbody>
+      {% if records %}
+	    {% for obj in records %}
+	    <tr class="user_record" user_id="{{obj.id}}">
+	        <td>
+	        	<input class="form-control u_username" disabled value="{{ obj.username }}" placeholder="--"/>
+	        </td>
+	        <td>
+	        	<input class="form-control u_chname" disabled value="{{ obj.chname }}" placeholder="--"/>
+	        </td>
+	        <td>
+	        	<input class="form-control u_qq" disabled value="{{ obj.qq }}" placeholder="--"/>
+	        </td>
+	        <td>
+	        	<input class="form-control u_phone" disabled value="{{ obj.phone }}" placeholder="--"/>
+	        </td>
+	        <td>
+	        	<input class="form-control u_email" disabled value="{{ obj.email }}" placeholder="--"/>
+	        </td>
+	        <td>
+	        {% if request.user.is_superuser%}
+		        {% if obj.is_superuser %}
+		        	<select class="form-control u_role" disabled style="width:90px">
+		        		<option value="0">用户</option>
+	                    <option value="1" selected>管理员</option>
+	                </select>
+		        {% else %}
+					<select class="form-control u_role" disabled style="width:90px">
+	                    <option value="0" selected>用户</option>
+	                    <option value="1">管理员</option>
+	                </select>
+		        {% endif %}
+		    {% else %}
+		    	<select class="form-control u_role" disabled style="width:90px">
+                    <option value="0" selected>用户</option>
+                </select>
+		    {% endif %}
+	        </td>
+	        <td>
+                <button type="button" class="btn-xs user_cancel_btn">取消</button>
+                <button type="button" class="btn-info btn-xs user_save_btn">保存</button>
+                <a href="###" title="编辑" class="dev_user_opera user_edit_btn"><span aria-hidden="true" class="glyphicon glyphicon-edit"></span></a>
+                <a href="###" title="重置密码" class="dev_user_opera user_rest_btn"><i aria-hidden="true" class="fa fa-key fa-rotate-90"></i></a>
+                {% if request.user.is_superuser %}
+                	<a href="###" value="{{obj.id}}" title="删除" class="dev_user_opera user_del_btn"><span aria-hidden="true" class="glyphicon glyphicon-remove-circle"></span></a>
+                {% endif %}
+	        </td>
+	    </tr>
+	    {% endfor %}
+	  {% else %}
+	    <tr class="tc" id="no_record_row"><td colspan="7"><center>没有数据</center></td></tr>
+	  {% endif %}
+    </tbody>
+</table>
+
+<div class="pull-right" style="margin-top:20px">
+    <input style="display:none" id="current_page" value="{{ records.number }}">
+	<div class="pagination" style="">
+        <span class="step-links">
+    		<ul class="pagination pagination-centered" style="margin-top: 0">
+
+            {% if records.has_previous %}
+                <li><a href="###" onclick="get_user({{ records.previous_page_number }})">上一页</a></li>
+            {% else %}
+                <li class="disabled"><a href="###" onclick="return false;">上一页</a></li>
+            {% endif %}
+
+            {%if show_first %}
+              <li><a href="###" onclick="get_user(1)">1</a></li>
+              <li class="disabled ellipsis"><a href="###">...</a></li>
+            {% endif %}
+
+            {% for page in page_numbers %}
+                {% if records.number != page %}
+                    <li><a href="###" onclick="get_user({{ page }})"> {{ page }} </a></li>
+                {% else %}
+                    <li class="active"><a href="###" onclick="return false;"> {{ page }} </a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if show_last %}
+              <li class="disabled ellipsis"><a href="###">...</a></li>
+              <li><a href="###" onclick="get_user({{records.paginator.num_pages}})">{{records.paginator.num_pages}}</a></li>
+            {% endif %}
+
+            {% if records.has_next %}
+                <li><a href="###" onclick="get_user({{records.next_page_number}})">下一页</a></li>
+            {% else %}
+                <li class="disabled"><a href="###" onclick="return false;">下一页</a></li>
+            {% endif %}
+    		</ul>
+		</span>
+	</div>
+</div>

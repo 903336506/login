@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="{{STATIC_URL}}favicon.ico">
+    <link href="{{STATIC_URL}}css/login.{{CSS_SUFFIX}}" rel="stylesheet" type="text/css" />
+    <title>蓝鲸智云</title>
+</head>
+
+<body style="padding:0px;margin:0px;min-width: 1200px;">
+    <div class="head_level1">
+        <div><a class="logoimg"></a></div>
+    </div>
+    <div class="head_level2"></div>
+    <div class="bg_body">
+        <div class="login_wrapper" style="min-width: 1200px; height: 739px;">
+            <div class="login_text login_text1"></div>
+            <div class="login_text login_text2"></div>
+            <div id="logo">
+                <div class="center">
+                    <form action="{{ app_path }}" method="post" id="login-form" onsubmit="return refresh_token()">{% csrf_token %}
+                        <input id="id_username" maxlength="254" name="username" type="text" class="ipt" placeholder="用户名"/>
+                        <input id="id_password" name="password" type="password" class="ipt" placeholder="密码"/>
+                        <input type="submit" class="btn_login" value="登入">
+                        <input type="hidden" name="next" value="{{ next }}" />
+                        <input type="hidden" name="app_id" value="{{app_id}}">
+                        {% if form.errors or form.non_field_errors %}
+                            <p class="login_error_tips"><i class="icon icon_error"></i>用户名密码错误</p>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-menu">
+        <a href="###" id="contact_us" class="link">QQ咨询</a>
+            <script src="//wp.qiye.qq.com/loader/4.0.0.js" charset="utf-8"></script>
+            <script type="text/javascript">
+               try{
+                  __WPA.create({
+                      nameAccount:"800802001",
+                      customEle: document.getElementById('contact_us')
+                  })
+               }catch(err){}
+            </script>
+        | <a href="http://bbs.bk.tencent.com/forum.php" target="_blank" hotrep="hp.footer.feedback" class="link">蓝鲸论坛</a>
+        | <a href="http://bk.tencent.com/" target="_blank" hotrep="hp.footer.feedback" class="link">蓝鲸官网</a>
+        | <a href="http://{{CUR_DOMIAN}}/" target="_blank" hotrep="hp.footer.feedback" class="link">蓝鲸智云工作台</a>
+        <br>
+        Copyright © 2012-{{NOW.year}} Tencent BlueKing. All Rights Reserved.<br>
+        蓝鲸智云 版权所有
+    </div>
+    <script src="{{STATIC_URL}}js/jquery-1.7.2.min.js"></script>
+    <script src="{{STATIC_URL}}js/login.{{JS_SUFFIX}}"></script>
+    <script type="text/javascript">
+        document.getElementById('id_username').focus()
+    </script>
+</body>
+</html>

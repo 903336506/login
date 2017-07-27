@@ -1,0 +1,93 @@
+{% extends "account/base.html" %}
+{% block body_content %}
+<div class="box-info full pg20">
+  <div class="dev_center_module">
+    <h4 class="dev_module_title">
+        <span style="color:red;font-size:14px" id="error_msg" class="">{{error_msg}}</span>
+        <span style="color:green;font-size:14px" id="error_msg" class="">{{success_msg}}</span>
+    	{% if request.user.is_superuser %}
+            &nbsp
+           <button type="button" class="btn-dafault btn-xs user_btn user_export_btn f_r"><span aria-hidden="true" class="glyphicon glyphicon-export"></span>导出</button>
+           <button type="button" class="btn-info btn-xs user_btn user_import_btn f_r"><span aria-hidden="true" class="glyphicon glyphicon-import"></span>批量导入</button>
+           <button type="button" class="btn-success btn-xs user_add_btn f_r"><span aria-hidden="true" class="glyphicon glyphicon-plus"></span>新增用户</button>
+        {% else %}
+        	用户信息
+        {% endif %}
+    </h4>
+    {% if request.user.is_superuser %}
+    <div id="seacher_input" class="form-inline" style="margin-top: -5px;">
+    {% else %}
+    <div id="seacher_input" class="form-inline" style="margin-top: -5px;display:none">
+    {% endif %}
+        <input id="search_data" type="text" class="form-control" style="width:250px" placeholder="查询：按用户名、中文名" onkeyup="enter_keyword(event);">
+        <select class="form-control"  id="search_role" style="">
+            <option value="" selected="">所有用户</option>
+            <option value="1">管理员</option>
+            <option value="0">用户</option>
+        </select>
+        <button id="serach_user" class="btn btn-azure btn-min-w" style="margin-top:9px;height:34px">查询</button>
+    </div>
+    <div id="user_table_div" class="clearfix">
+    </div>
+  </div>
+	<h5 class="">温馨提示:</h5>
+	<hr style="margin-top:10px;margin-bottom:10px">
+	<div class="user_introduce_box">
+	    <p>用户的默认密码为：<code>{{default_paasword}}</code> </p>
+	    <p>管理员可以管理所有用户的信息</p>
+	    <p>普通用户只可以管理自己的用户信息</p>
+	</div>
+</div>
+<div id="user_import_div" style="display:none">
+    <form class="form-horizontal" action="{{SITE_URL}}accounts/import_data/" enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        <div class="mt10 mb10">
+            <label class="password_label">选择文件：<span style="color:red">*</span> </label>
+            <input style="display:inline" name="data_files" id="data_files" type="file">
+            <button type="button" class="btn-success btn-xs user_btn import_btn" ><span aria-hidden="true" class="glyphicon glyphicon-import"></span>导入用户</button>
+            <button type="submit" id="sumbit_import" style="display:none">提交</button>
+        </div>
+        <div>
+            <a href="{{STATIC_URL}}bk_user_import.xls">点击下载EXCEL模板</a>
+            <span style="color:red" id="error_msg" class="ml20"></span>
+        </div>
+        <div class="alert" style="margin-top:10px;">
+            <p>注意：</p>
+            <p>1.请下载<a href="{{STATIC_URL}}bk_user_import.xls">EXCEL模板</a>文件填写用户数据</p>
+            <p>2.<code>用户名</code>为必填，包含数字和字母，长度在4-20个字符</p>
+            <p>3.<code>用户名</code>为唯一标识，重复导入会覆盖已有数据</p>
+            <p>4.导入用户默认密码为：<code>{{default_paasword}}</code></p>
+            <p>5.文件后缀名必须为：<code>.xls</code> 或 <code>.xlsx</code> </p>
+            <p>6.导入失败请检查EXCEL格式规范，或重新下载模板填写</p>
+        </div>
+    </from>
+    <span id="password_tip" style="color:red"></span>
+</div>
+
+<div id="change_password_div" style="display:none">
+    <div>
+        <label class="password_label">新密码：<span style="color:red">*</span> </label>
+        <!-- 防止Firefox下密码自动填充 -->
+        <input type="text" style="display:none">
+        <input type="password" style="display:none">
+        <input class="form-control password_input" id="id_password1" name="password1"  type="text" onfocus="this.type='password'">
+        <span style="color:red;display:none" class="error_tip ml10">必填</span>
+        <p style="margin-left: 100px;" class="tip ml10" id="pattern_tip">仅包含数字、字母或!@#$%^*()_-+=，长度在4-20个字符</p>
+    </div>
+    <div>
+        <label class="password_label">确认密码：<span style="color:red">*</span> </label>
+        <input class="form-control password_input" id="id_password2" name="password2"  type="text" onfocus="this.type='password'">
+        <span style="color:red;display:none" class="error_tip ml10">必填</span>
+    </div>
+    <span id="password_tip" style="color:red;margin-left: 100px;"></span>
+</div>
+{% endblock %}
+
+{% block script %}
+    <script src="{{STATIC_URL}}js/users.{{JS_SUFFIX}}?v={{STATIC_VERSION}}"></script>
+    <script type="text/javascript">
+    $(function(){
+    	$('#serach_user').click();
+    })
+    </script>
+{% endblock %}
